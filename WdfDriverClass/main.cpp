@@ -36,10 +36,11 @@ NTSTATUS WdfDriverClass::DriverEntry(IN PDRIVER_OBJECT DriverObject, IN PUNICODE
 	// DriverEntry里面的这种初始化工作，和所有的小端口驱动一模一样，简直别无二致。
 	// 读者可以据此参看诸如Scasi、文件过滤、NDIS、StreamPort等类型的小端口驱动，是如何运作的。
 	WDF_DRIVER_CONFIG_INIT(&config, WdfDriverClass::PnpAdd_Common);  //注册EvtDriverDeviceAdd事件回调函数,config为返回的被初始化后的结构体
+	//config.EvtDriverUnload = ;//设置卸载函数，相当于WDM中DriverUnload函数。一般用于非PNP类驱动中
 
 	NTSTATUS status = WdfDriverCreate(DriverObject, // WDF驱动对象
-		RegistryPath,
-		&attributes,
+		RegistryPath, //驱动所对应的服务键在注册表中的路径,信息来自内核配置和管理服务器(Cfg Manager)
+		&attributes,//对DriverObject对象的属性配置
 		&config, // 配置参数
 		&m_hDriver);
 
