@@ -79,6 +79,9 @@ public:
 	static WdfDriverClass* GetWdfDriverClassFromDevice(WDFDEVICE Device);
 
 protected:
+	virtual NTSTATUS ConfigurePcieDevice();
+
+protected:
 	int m_nSize;//记录此驱动类的大小
 	WDFDRIVER m_hDriver;
 	WDFDEVICE m_hDevice;

@@ -64,14 +64,14 @@ NTSTATUS WdfDriverClass::PnpAdd(IN PWDFDEVICE_INIT DeviceInit)
 	UNICODE_STRING	unicodeEnumName, temp;
 	WDF_OBJECT_ATTRIBUTES  attributesForRequests;
 
-	PAGED_CODE();
+	//PAGED_CODE(); //PAGED_CODE这个宏可以确保调用线程运行在一个允许分页的足够低IRQL级别
 	// Get the device enumerator name to detect whether the device being
 	// added is a PCI device or root-enumerated non pnp ISA device.
 	// It's okay to WDM functions when there is no appropriate WDF
 	// interface is available.
 	//
 	status = WdfFdoInitQueryProperty(DeviceInit,
-		DevicePropertyEnumeratorName,
+		DevicePropertyEnumeratorName,		//获取设备名称
 		sizeof(enumeratorName),
 		enumeratorName,
 		&returnSize);
@@ -81,7 +81,7 @@ NTSTATUS WdfDriverClass::PnpAdd(IN PWDFDEVICE_INIT DeviceInit)
 	}
 
 	WDF_OBJECT_ATTRIBUTES_INIT_CONTEXT_TYPE(&attributesForRequests, REQUEST_CONTEXT);
-	WdfDeviceInitSetRequestAttributes(DeviceInit, &attributesForRequests);
+	WdfDeviceInitSetRequestAttributes(DeviceInit, &attributesForRequests);//设置默认对象属性，此属性将运用于从框架队列中出列的IO Request 对象
 
 	RtlInitUnicodeString(&unicodeEnumName, enumeratorName);
 	RtlInitUnicodeString(&temp, L"PCI");
@@ -94,7 +94,7 @@ NTSTATUS WdfDriverClass::PnpAdd(IN PWDFDEVICE_INIT DeviceInit)
 	}
 	//设备验证成功
 	WDF_PNPPOWER_EVENT_CALLBACKS_INIT(&pnpPowerCallbacks);  //初始化电源回调结构体
-	InitPnpPwrEvents(&pnpPowerCallbacks);
+	InitPnpPwrEvents(&pnpPowerCallbacks);  //设置电源回调
 	WdfDeviceInitSetPnpPowerEventCallbacks(DeviceInit, &pnpPowerCallbacks);
 
 }
@@ -130,7 +130,7 @@ NTSTATUS WdfDriverClass::PnpPrepareHardware(IN WDFCMRESLIST ResourceList, IN WDF
 	// bus driver manages the device's PCI Base Address Registers.
 	//
 
-	UNREFERENCED_PARAMETER( ResourceList );
+	UNREFERENCED_PARAMETER( ResourceList );//避免编译器关于未引用参数的警告
 
 
 	pContext = GetDeviceContext(m_hDevice);
@@ -250,10 +250,11 @@ NTSTATUS WdfDriverClass::PwrD0Exit_common(IN WDFDEVICE  Device, IN WDF_POWER_DEV
 	return pThis->PwrD0Exit(PreviousState);
 }
 
+// 设备配置
+NTSTATUS WdfDriverClass::ConfigurePcieDevice()
+{
 
-
-
-
+}
 
 char* PowerName(WDF_POWER_DEVICE_STATE PowerState)
 {

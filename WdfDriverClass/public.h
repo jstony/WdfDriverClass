@@ -44,7 +44,7 @@ typedef struct _DEVICE_CONTEXT {
 		int nLength;
 		WDFDRIVER hDriver;
 
-		WDFDEVICE           wdfDevice;                 // 创建设备对象 
+		WDFDEVICE           Device;                 // 创建设备对象 
 		WDFDMAENABLER       DmaEnabler;             // A WDFDMAENABLER handle
 		WDFREQUEST          CurrentRequest;         // A WDFREQUEST handle
 		WDFINTERRUPT        WdfInterrupt;

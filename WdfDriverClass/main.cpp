@@ -54,7 +54,8 @@ NTSTATUS WdfDriverClass::DriverEntry(IN PDRIVER_OBJECT DriverObject, IN PUNICODE
 		WDF_OBJECT_ATTRIBUTES_INIT(&attributes);			//初始化结构体
 		attributes.ParentObject = m_hDriver;						//设置上层父对象，组成驱动树
 		attributes.EvtDestroyCallback  = WdfDriverClassDestroy;
-		WdfMemoryCreatePreallocated(&attributes, (PVOID)this, GetSize(), &hMemDrv);
+		WdfMemoryCreatePreallocated(&attributes, (PVOID)this, GetSize(), &hMemDrv);//使用框架对类缓冲区进和封装,此方法将保证驱动类的正常工作 WdfObjectDelete将内存对
+																																	//象删除后并不释放该内存区域。
 	}
 
 	return status;
